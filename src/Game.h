@@ -2,6 +2,8 @@
 #include "structs.h"
 #include "SDL.h"
 #include "SDL_opengl.h"
+#include "FlyFish.h"
+#include "Player.h";
 
 class Game
 {
@@ -23,11 +25,41 @@ public:
 	// Event handling
 	void ProcessKeyDownEvent(const SDL_KeyboardEvent& e)
 	{
-
+		if (e.keysym.scancode == SDL_SCANCODE_W)
+		{
+			m_KeysPressed.m_WIsPressed = true;
+		}
+		if (e.keysym.scancode == SDL_SCANCODE_A)
+		{
+			m_KeysPressed.m_AIsPressed = true;
+		}
+		if (e.keysym.scancode == SDL_SCANCODE_S)
+		{
+			m_KeysPressed.m_SIsPressed = true;
+		}
+		if (e.keysym.scancode == SDL_SCANCODE_D)
+		{
+			m_KeysPressed.m_DIsPressed = true;
+		}
 	}
 	void ProcessKeyUpEvent(const SDL_KeyboardEvent& e)
 	{
-
+		if (e.keysym.scancode == SDL_SCANCODE_W)
+		{
+			m_KeysPressed.m_WIsPressed = false;
+		}
+		if (e.keysym.scancode == SDL_SCANCODE_A)
+		{
+			m_KeysPressed.m_AIsPressed = false;
+		}
+		if (e.keysym.scancode == SDL_SCANCODE_S)
+		{
+			m_KeysPressed.m_SIsPressed = false;
+		}
+		if (e.keysym.scancode == SDL_SCANCODE_D)
+		{
+			m_KeysPressed.m_DIsPressed = false;
+		}
 	}
 	void ProcessMouseMotionEvent(const SDL_MouseMotionEvent& e)
 	{
@@ -64,4 +96,20 @@ private:
 	// FUNCTIONS
 	void InitializeGameEngine( );
 	void CleanupGameEngine( );
+	void InitializeVariables();
+	void CleanUpVariables();
+
+	void PlayerBorderCheck();
+
+	//Player
+	Player* m_pPlayer{};
+
+	//Border
+	OneBlade m_TopBorder{ -m_Window.height,-1,0,0 };
+	OneBlade m_BottomBorder{ 0,1,0,0 };
+	OneBlade m_LeftBorder{ 0,0,1,0 };
+	OneBlade m_RightBorder{ -m_Window.width,0,-1,0};
+	
+	//Keys being pressed;
+	IsPressed m_KeysPressed{};
 };

@@ -17,11 +17,13 @@ Game::Game(const Window& window)
 	, m_MaxElapsedSeconds{ 0.1f }
 {
 	InitializeGameEngine();
+	InitializeVariables();
 }
 
 Game::~Game()
 {
 	CleanupGameEngine();
+	CleanUpVariables();
 }
 
 void Game::InitializeGameEngine()
@@ -99,6 +101,7 @@ void Game::InitializeGameEngine()
 		std::cerr << "BaseGame::Initialize( ), error when calling TTF_Init: " << TTF_GetError() << std::endl;
 		return;
 	}
+
 
 	m_Initialized = true;
 }
@@ -191,10 +194,50 @@ void Game::CleanupGameEngine()
 
 }
 
+void Game::InitializeVariables()
+{
+	//
+	m_pPlayer = new Player{ ThreeBlade{m_Window.width / 2.f, m_Window.height / 2.f,0.f} };
+	Motor translator{ Motor::Translation(m_Window.height,TwoBlade{0,1,0,0,0,0}) };
+	//m_TopBorder = (translator * m_TopBorder * ~translator).Grade1();
+}
+
+void Game::CleanUpVariables()
+{
+	delete m_pPlayer;
+}
+void Game::PlayerBorderCheck()
+{
+	if (((m_BottomBorder | m_pPlayer->GetPos())).VNorm() / m_pPlayer->GetPos().Norm() <= 15.f)
+	{
+		m_KeysPressed.m_SIsPressed = false;
+	}
+	if (((m_TopBorder | m_pPlayer->GetPos())).VNorm() / m_pPlayer->GetPos().Norm() <= 15.f)
+	{
+		m_KeysPressed.m_WIsPressed = false;
+	}
+	if (((m_LeftBorder | m_pPlayer->GetPos())).VNorm() / m_pPlayer->GetPos().Norm() <= 15.f)
+	{
+		m_KeysPressed.m_AIsPressed = false;
+	}
+	if (((m_RightBorder | m_pPlayer->GetPos())).VNorm() / m_pPlayer->GetPos().Norm() <= 15.f)
+	{
+		m_KeysPressed.m_DIsPressed = false;
+	}
+
+}
 void Game::Update(float elapsedSec)
 {
+	PlayerBorderCheck();
+	
+	m_pPlayer->UpdatePlayer(m_KeysPressed,elapsedSec);
 }
 
 void Game::Draw() const
 {
+	glClearColor(0.f, 0.f, 0.f, 1.f);
+	glClear(GL_COLOR_BUFFER_BIT);
+
+	m_pPlayer->DrawPlayer();
+	
 }
