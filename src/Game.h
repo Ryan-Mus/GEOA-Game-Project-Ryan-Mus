@@ -105,10 +105,13 @@ private:
 	Player* m_pPlayer{};
 
 	//Border
-	OneBlade m_TopBorder{ -m_Window.height,-1,0,0 };
 	OneBlade m_BottomBorder{ 0,1,0,0 };
 	OneBlade m_LeftBorder{ 0,0,1,0 };
-	OneBlade m_RightBorder{ -m_Window.width,0,-1,0};
+
+	//Rotate around line
+	TwoBlade m_Pillar{ m_Window.width / 2.f,m_Window.height / 2.f,0,0,0,1 };
+
+	OneBlade m_Plane{ (m_Window.width-10.f)/2.f / 2,1,1,0 };
 	
 	//Keys being pressed;
 	IsPressed m_KeysPressed{};

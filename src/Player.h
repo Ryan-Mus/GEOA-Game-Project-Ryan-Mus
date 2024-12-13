@@ -22,6 +22,7 @@ public:
 	void SetVelocity(TwoBlade velocity);
 	TwoBlade GetVelocity() { return m_Velocity; };
 	ThreeBlade GetPos() { return m_Pos; };
+	void SetPos(const ThreeBlade& point) { m_Pos = point; };
 private:
 	ThreeBlade m_Pos;
 	TwoBlade m_Velocity{0,0,0,0,0,0};

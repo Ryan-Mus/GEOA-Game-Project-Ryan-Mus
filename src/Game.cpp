@@ -7,6 +7,7 @@
 #include "Game.h"
 #include "utils.h"
 #include "structs.h"
+#include "MathHelp.h"
 
 Game::Game(const Window& window)
 	: m_Window{ window }
@@ -197,9 +198,8 @@ void Game::CleanupGameEngine()
 void Game::InitializeVariables()
 {
 	//
-	m_pPlayer = new Player{ ThreeBlade{m_Window.width / 2.f, m_Window.height / 2.f,0.f} };
-	Motor translator{ Motor::Translation(m_Window.height,TwoBlade{0,1,0,0,0,0}) };
-	//m_TopBorder = (translator * m_TopBorder * ~translator).Grade1();
+	m_pPlayer = new Player{ ThreeBlade{200.f, m_Window.height / 2.f,0.f} };
+	Motor translator{ Motor::Translation(m_Window.height,TwoBlade{0,1,0,0,0,0}) };;
 }
 
 void Game::CleanUpVariables()
@@ -208,19 +208,20 @@ void Game::CleanUpVariables()
 }
 void Game::PlayerBorderCheck()
 {
-	if (((m_BottomBorder | m_pPlayer->GetPos())).VNorm() / m_pPlayer->GetPos().Norm() <= 15.f)
+	if (math::GetDistance(m_BottomBorder,m_pPlayer->GetPos()) <= 15.f)
 	{
 		m_KeysPressed.m_SIsPressed = false;
+		//std::cout << math::GetDistance(m_BottomBorder,m_pPlayer->GetPos()) << std::endl;
 	}
-	if (((m_TopBorder | m_pPlayer->GetPos())).VNorm() / m_pPlayer->GetPos().Norm() <= 15.f)
+	if (math::GetDistance(m_BottomBorder, m_pPlayer->GetPos()) >= m_Window.height-15.f)
 	{
 		m_KeysPressed.m_WIsPressed = false;
 	}
-	if (((m_LeftBorder | m_pPlayer->GetPos())).VNorm() / m_pPlayer->GetPos().Norm() <= 15.f)
+	if (math::GetDistance(m_LeftBorder, m_pPlayer->GetPos()) <= 15.f)
 	{
 		m_KeysPressed.m_AIsPressed = false;
 	}
-	if (((m_RightBorder | m_pPlayer->GetPos())).VNorm() / m_pPlayer->GetPos().Norm() <= 15.f)
+	if (math::GetDistance(m_LeftBorder, m_pPlayer->GetPos()) >= m_Window.width-15.f)
 	{
 		m_KeysPressed.m_DIsPressed = false;
 	}
@@ -229,8 +230,22 @@ void Game::PlayerBorderCheck()
 void Game::Update(float elapsedSec)
 {
 	PlayerBorderCheck();
+
+	m_pPlayer->HandleInput(m_KeysPressed);
 	
-	m_pPlayer->UpdatePlayer(m_KeysPressed,elapsedSec);
+	TwoBlade Pillar2{ m_Window.width / 2.f+50.f,m_Window.height / 2.f,0,0,0,1 };
+
+	if (math::GetDistance(m_Pillar,m_pPlayer->GetPos()) < 100.f)
+	{
+		ThreeBlade pos{ m_pPlayer->GetPos() };
+		math::RotateAroundLine(pos, m_Pillar, 100.f * elapsedSec);
+		math::RotateAroundLine(pos, Pillar2, 100.f * elapsedSec);
+		m_pPlayer->SetPos(pos);
+	}	
+
+	math::RotateAroundLine(m_Pillar, Pillar2, 100.f * elapsedSec);
+
+	m_pPlayer->UpdatePlayer(m_KeysPressed, elapsedSec);
 }
 
 void Game::Draw() const
@@ -239,5 +254,10 @@ void Game::Draw() const
 	glClear(GL_COLOR_BUFFER_BIT);
 
 	m_pPlayer->DrawPlayer();
+
+	utils::SetColor(Color4f{ 1.f,0.3f,0.3f,1.f });
+	utils::FillRect(m_Pillar[0] - 10.f / 2, m_Pillar[1] - 10.f / 2, 10.f, 10.f);
+	utils::SetColor(Color4f{ 1.f,0.1f,0.1f,1.f });
+	utils::DrawEllipse(Point2f{ m_Pillar[0],m_Pillar[1] }, 100.f, 100.f);
 	
 }

@@ -10,13 +10,13 @@ Player::Player(ThreeBlade pos): m_Pos{pos}
 void Player::DrawPlayer() const
 {
 	utils::SetColor(Color4f{ 0.3f,0.3f,1.f,1.f });
-	utils::FillRect(m_Pos[0]-m_Size/2, m_Pos[1]-m_Size/2, m_Size, m_Size);
+	utils::FillRect(m_Pos[0] - m_Size / 2, m_Pos[1] - m_Size / 2, m_Size, m_Size);
 }
 
 void Player::UpdatePlayer(IsPressed keysPressed,float elapsedSec)
 {
-	HandleInput(keysPressed);
-	if (m_Velocity != TwoBlade{})
+
+	if (!(m_Velocity[0] == 0 and m_Velocity[1] == 0 and m_Velocity[2] == 0)) //vermijd translatie met 0
 	{
 		Motor translator{ Motor::Translation(m_Speed * elapsedSec,m_Velocity)};
 		m_Pos = (translator * m_Pos * ~translator).Grade3();
@@ -24,7 +24,7 @@ void Player::UpdatePlayer(IsPressed keysPressed,float elapsedSec)
 	
 	//std::cout << "Player pos: " << m_Pos << std::endl;
 
-	m_Velocity = {};
+	m_Velocity = {}; //Reset volocity
 }
 
 void Player::SetVelocity(TwoBlade velocity)
@@ -41,18 +41,18 @@ void Player::HandleInput(IsPressed keysPressed)
 {
 	if (keysPressed.m_WIsPressed)
 	{
-		m_Velocity += TwoBlade{ 0,1,0,0,0,0 };
+		m_Velocity += TwoBlade{ 0,1,0,0,0,1 };
 	}
 	if (keysPressed.m_AIsPressed)
 	{
-		m_Velocity += TwoBlade{ -1,0,0,0,0,0 };
+		m_Velocity += TwoBlade{ -1,0,0,0,0,1 };
 	}
 	if (keysPressed.m_SIsPressed)
 	{
-		m_Velocity += TwoBlade{ 0,-1,0,0,0,0 };
+		m_Velocity += TwoBlade{ 0,-1,0,0,0,1 };
 	}
 	if (keysPressed.m_DIsPressed)
 	{
-		m_Velocity += TwoBlade{ 1,0,0,0,0,0 };
+		m_Velocity += TwoBlade{ 1,0,0,0,0,1 };
 	}
 }
