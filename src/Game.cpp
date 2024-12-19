@@ -1,4 +1,3 @@
-#include <iostream>
 #include <algorithm>
 #include <SDL.h>
 #include <SDL_opengl.h>
@@ -6,7 +5,6 @@
 #include <chrono>
 #include "Game.h"
 #include "utils.h"
-#include "structs.h"
 #include "MathHelp.h"
 
 Game::Game(const Window& window)
@@ -213,7 +211,7 @@ void Game::PlayerBorderCheck()
 		m_KeysPressed.m_SIsPressed = false;
 		//std::cout << math::GetDistance(m_BottomBorder,m_pPlayer->GetPos()) << std::endl;
 	}
-	if (math::GetDistance(m_BottomBorder, m_pPlayer->GetPos()) >= m_Window.height-15.f)
+	if (math::GetDistance(m_TopBorder, m_pPlayer->GetPos()) <= 15.f)
 	{
 		m_KeysPressed.m_WIsPressed = false;
 	}
@@ -221,31 +219,64 @@ void Game::PlayerBorderCheck()
 	{
 		m_KeysPressed.m_AIsPressed = false;
 	}
-	if (math::GetDistance(m_LeftBorder, m_pPlayer->GetPos()) >= m_Window.width-15.f)
+	if (math::GetDistance(m_RightBorder, m_pPlayer->GetPos()) <= 15.f)
 	{
 		m_KeysPressed.m_DIsPressed = false;
 	}
 
 }
+void Game::BulletBorderCheck()
+{
+	for (int i{}; i < m_Bullets.size(); ++i)
+	{
+		if (math::GetDistance(m_BottomBorder, m_Bullets[i].GetPos()) <= 15.f)
+		{
+			m_Bullets[i].ReflectBullet(m_BottomBorder);
+		}
+		if (math::GetDistance(m_BottomBorder, m_Bullets[i].GetPos()) >= m_Window.height - 15.f)
+		{
+			m_Bullets[i].ReflectBullet(m_BottomBorder);
+		}
+		if (math::GetDistance(m_LeftBorder, m_Bullets[i].GetPos()) <= 15.f)
+		{
+			m_Bullets[i].ReflectBullet( m_LeftBorder);
+		}
+		if (math::GetDistance(m_LeftBorder, m_Bullets[i].GetPos()) >= m_Window.width - 15.f)
+		{
+			m_Bullets[i].ReflectBullet(m_LeftBorder);
+		}
+	}
+}
 void Game::Update(float elapsedSec)
 {
+	std::cout << "Framerate: " << 1.f / elapsedSec << std::endl;
+	//Player Update
 	PlayerBorderCheck();
+	BulletBorderCheck();
 
 	m_pPlayer->HandleInput(m_KeysPressed);
 	
-	TwoBlade Pillar2{ m_Window.width / 2.f+50.f,m_Window.height / 2.f,0,0,0,1 };
 
-	if (math::GetDistance(m_Pillar,m_pPlayer->GetPos()) < 100.f)
+	if (math::GetDistance(m_Pillar,m_pPlayer->GetPos()) < 250.f)
 	{
 		ThreeBlade pos{ m_pPlayer->GetPos() };
-		math::RotateAroundLine(pos, m_Pillar, 100.f * elapsedSec);
-		math::RotateAroundLine(pos, Pillar2, 100.f * elapsedSec);
+		math::RotateAroundLine(pos, m_Pillar, 200.f * elapsedSec);
+		
 		m_pPlayer->SetPos(pos);
 	}	
 
-	math::RotateAroundLine(m_Pillar, Pillar2, 100.f * elapsedSec);
-
 	m_pPlayer->UpdatePlayer(m_KeysPressed, elapsedSec);
+
+	//Bullet Update
+	for (int i{}; i < m_Bullets.size(); ++i)
+	{
+		m_Bullets[i].Update(elapsedSec);
+		if (math::GetDistance(m_Pillar, m_Bullets[i].GetPos()) < 250.f)
+		{
+			m_Bullets[i].RotateBullet(m_Pillar, 150.f * elapsedSec);
+			
+		}
+	}
 }
 
 void Game::Draw() const
@@ -258,6 +289,11 @@ void Game::Draw() const
 	utils::SetColor(Color4f{ 1.f,0.3f,0.3f,1.f });
 	utils::FillRect(m_Pillar[0] - 10.f / 2, m_Pillar[1] - 10.f / 2, 10.f, 10.f);
 	utils::SetColor(Color4f{ 1.f,0.1f,0.1f,1.f });
-	utils::DrawEllipse(Point2f{ m_Pillar[0],m_Pillar[1] }, 100.f, 100.f);
+	utils::DrawEllipse(Point2f{ m_Pillar[0],m_Pillar[1] }, 250.f, 250.f);
+
+	for (int i{}; i < m_Bullets.size(); ++i)
+	{
+		m_Bullets[i].Draw();
+	}
 	
 }

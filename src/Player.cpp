@@ -1,6 +1,8 @@
-#include "Player.h";
-#include "utils.h";
-#include <iostream>;
+#include "Player.h"
+#include "utils.h"
+#include "MathHelp.h"
+#include <iostream>
+
 
 Player::Player(ThreeBlade pos): m_Pos{pos}
 {
@@ -16,10 +18,9 @@ void Player::DrawPlayer() const
 void Player::UpdatePlayer(IsPressed keysPressed,float elapsedSec)
 {
 
-	if (!(m_Velocity[0] == 0 and m_Velocity[1] == 0 and m_Velocity[2] == 0)) //vermijd translatie met 0
+	if (m_Velocity.VNorm() != 0) //vermijd translatie met 0
 	{
-		Motor translator{ Motor::Translation(m_Speed * elapsedSec,m_Velocity)};
-		m_Pos = (translator * m_Pos * ~translator).Grade3();
+		math::Translate(m_Pos, m_Velocity, m_Speed * elapsedSec);
 	}
 	
 	//std::cout << "Player pos: " << m_Pos << std::endl;
@@ -27,32 +28,26 @@ void Player::UpdatePlayer(IsPressed keysPressed,float elapsedSec)
 	m_Velocity = {}; //Reset volocity
 }
 
-void Player::SetVelocity(TwoBlade velocity)
-{
-	
-	m_Velocity = m_Velocity + velocity;
-
-	//std::cout << "Velocity Set to " << m_Velocity << std::endl;
-}
-
-
-
 void Player::HandleInput(IsPressed keysPressed)
 {
 	if (keysPressed.m_WIsPressed)
 	{
-		m_Velocity += TwoBlade{ 0,1,0,0,0,1 };
+		m_Velocity += TwoBlade{ 0,1,0,0,0,0 };
 	}
 	if (keysPressed.m_AIsPressed)
 	{
-		m_Velocity += TwoBlade{ -1,0,0,0,0,1 };
+		m_Velocity += TwoBlade{ -1,0,0,0,0,0 };
 	}
 	if (keysPressed.m_SIsPressed)
 	{
-		m_Velocity += TwoBlade{ 0,-1,0,0,0,1 };
+		m_Velocity += TwoBlade{ 0,-1,0,0,0,0 };
 	}
 	if (keysPressed.m_DIsPressed)
 	{
-		m_Velocity += TwoBlade{ 1,0,0,0,0,1 };
+		m_Velocity += TwoBlade{ 1,0,0,0,0,0 };
+	}
+	if (keysPressed.m_SpaceIsPressed)
+	{
+		m_Velocity += TwoBlade{ 0,0,1,0,0,0 };
 	}
 }
