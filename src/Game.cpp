@@ -195,14 +195,13 @@ void Game::CleanupGameEngine()
 
 void Game::InitializeVariables()
 {
-	//
-	m_pPlayer = new Player{ ThreeBlade{200.f, m_Window.height / 2.f,0.f} };
+	m_pPlayer = std::make_unique<Player>(ThreeBlade{200.f, m_Window.height / 2.f,0.f});
 	Motor translator{ Motor::Translation(m_Window.height,TwoBlade{0,1,0,0,0,0}) };;
 }
 
 void Game::CleanUpVariables()
 {
-	delete m_pPlayer;
+
 }
 void Game::PlayerBorderCheck()
 {
@@ -229,19 +228,19 @@ void Game::BulletBorderCheck()
 {
 	for (int i{}; i < m_Bullets.size(); ++i)
 	{
-		if (math::GetDistance(m_BottomBorder, m_Bullets[i].GetPos()) <= 15.f)
+		if (math::GetDistance(m_BottomBorder, m_Bullets[i].GetPos()) <= 5.f)
 		{
 			m_Bullets[i].ReflectBullet(m_BottomBorder);
 		}
-		if (math::GetDistance(m_BottomBorder, m_Bullets[i].GetPos()) >= m_Window.height - 15.f)
+		if (math::GetDistance(m_BottomBorder, m_Bullets[i].GetPos()) >= m_Window.height - 5.f)
 		{
 			m_Bullets[i].ReflectBullet(m_BottomBorder);
 		}
-		if (math::GetDistance(m_LeftBorder, m_Bullets[i].GetPos()) <= 15.f)
+		if (math::GetDistance(m_LeftBorder, m_Bullets[i].GetPos()) <= 5.f)
 		{
 			m_Bullets[i].ReflectBullet( m_LeftBorder);
 		}
-		if (math::GetDistance(m_LeftBorder, m_Bullets[i].GetPos()) >= m_Window.width - 15.f)
+		if (math::GetDistance(m_LeftBorder, m_Bullets[i].GetPos()) >= m_Window.width - 5.f)
 		{
 			m_Bullets[i].ReflectBullet(m_LeftBorder);
 		}
@@ -252,29 +251,36 @@ void Game::Update(float elapsedSec)
 	std::cout << "Framerate: " << 1.f / elapsedSec << std::endl;
 	//Player Update
 	PlayerBorderCheck();
-	BulletBorderCheck();
 
 	m_pPlayer->HandleInput(m_KeysPressed);
-	
-
-	if (math::GetDistance(m_Pillar,m_pPlayer->GetPos()) < 250.f)
-	{
-		ThreeBlade pos{ m_pPlayer->GetPos() };
-		math::RotateAroundLine(pos, m_Pillar, 200.f * elapsedSec);
-		
-		m_pPlayer->SetPos(pos);
-	}	
+	ThreeBlade pos{m_pPlayer->GetPos()};
+	m_Pillar.Update(elapsedSec, m_Bullets, pos);
+	m_pPlayer->SetPos(pos);
 
 	m_pPlayer->UpdatePlayer(m_KeysPressed, elapsedSec);
-
-	//Bullet Update
-	for (int i{}; i < m_Bullets.size(); ++i)
+	
+	//substeps for better bullet updates
+	for (int i{}; i < SUBSTEPS; ++i)
 	{
-		m_Bullets[i].Update(elapsedSec);
-		if (math::GetDistance(m_Pillar, m_Bullets[i].GetPos()) < 250.f)
+		BulletBorderCheck();
+		for (auto it = m_Bullets.begin(); it != m_Bullets.end();) 
 		{
-			m_Bullets[i].RotateBullet(m_Pillar, 150.f * elapsedSec);
-			
+			it->Update(elapsedSec / SUBSTEPS);
+
+			if (it == m_Bullets.begin() && it->GetPos()[2] < 0.f) 
+			{
+				// if first bullet time is up pop_front
+				m_Bullets.pop_front();
+				it = m_Bullets.begin(); // Reset iterator to begin
+			}
+			else if (math::GetDistance(m_pPlayer->GetPos(), it->GetPos()) < 15.f and it->GetPos()[2] < 9.9f) //Player Collision after 0.1s of firing
+			{
+				it = m_Bullets.erase(it);
+			}
+			else 
+			{
+				++it; //Next bullet
+			}
 		}
 	}
 }
@@ -286,14 +292,11 @@ void Game::Draw() const
 
 	m_pPlayer->DrawPlayer();
 
-	utils::SetColor(Color4f{ 1.f,0.3f,0.3f,1.f });
-	utils::FillRect(m_Pillar[0] - 10.f / 2, m_Pillar[1] - 10.f / 2, 10.f, 10.f);
-	utils::SetColor(Color4f{ 1.f,0.1f,0.1f,1.f });
-	utils::DrawEllipse(Point2f{ m_Pillar[0],m_Pillar[1] }, 250.f, 250.f);
+	m_Pillar.Draw();
 
-	for (int i{}; i < m_Bullets.size(); ++i)
+	for (const Bullet& bullet : m_Bullets)
 	{
-		m_Bullets[i].Draw();
+		bullet.Draw();
 	}
 	
 }

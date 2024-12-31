@@ -1333,7 +1333,7 @@ extern "C" {
 #define SDL_HINT_MAC_OPENGL_ASYNC_DISPATCH "SDL_MAC_OPENGL_ASYNC_DISPATCH"
 
 /**
- *  \brief  A variable setting the double click radius, in pixels.
+ *  \brief  A variable setting the double click m_Radius, in pixels.
  */
 #define SDL_HINT_MOUSE_DOUBLE_CLICK_RADIUS    "SDL_MOUSE_DOUBLE_CLICK_RADIUS"
 
@@ -1600,9 +1600,9 @@ extern "C" {
  *  \brief  A variable controlling how the 2D render API renders lines
  *
  *  This variable can be set to the following values:
- *    "0"     - Use the default line drawing method (Bresenham's line algorithm as of SDL 2.0.20)
- *    "1"     - Use the driver point API using Bresenham's line algorithm (correct, draws many points)
- *    "2"     - Use the driver line API (occasionally misses line endpoints based on hardware driver quirks, was the default before 2.0.20)
+ *    "0"     - Use the default m_Line drawing method (Bresenham's m_Line algorithm as of SDL 2.0.20)
+ *    "1"     - Use the driver point API using Bresenham's m_Line algorithm (correct, draws many points)
+ *    "2"     - Use the driver m_Line API (occasionally misses m_Line endpoints based on hardware driver quirks, was the default before 2.0.20)
  *    "3"     - Use the driver geometry API (correct, draws thicker diagonal lines)
  *
  *  This variable should be set when the renderer is created.

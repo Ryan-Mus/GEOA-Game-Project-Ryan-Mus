@@ -130,9 +130,9 @@ extern "C" {
 /* Function prototypes */
 
 /**
- * \brief Parse command line parameters and create common state.
+ * \brief Parse command m_Line parameters and create common state.
  *
- * \param argv Array of command line parameters
+ * \param argv Array of command m_Line parameters
  * \param flags Flags indicating which subsystem to initialize (i.e. SDL_INIT_VIDEO | SDL_INIT_AUDIO)
  *
  * \returns a newly allocated common state object.
@@ -151,9 +151,9 @@ int SDLTest_CommonArg(SDLTest_CommonState * state, int index);
 
 
 /**
- * \brief Logs command line usage info.
+ * \brief Logs command m_Line usage info.
  *
- * This logs the appropriate command line options for the subsystems in use
+ * This logs the appropriate command m_Line options for the subsystems in use
  *  plus other common options, and then any application-specific options.
  *  This uses the SDL_Log() function and splits up output to be friendly to
  *  80-character-wide terminals.

@@ -1,3 +1,4 @@
+#pragma once
 #include "Player.h"
 #include "utils.h"
 #include "MathHelp.h"
@@ -18,7 +19,7 @@ void Player::DrawPlayer() const
 void Player::UpdatePlayer(IsPressed keysPressed,float elapsedSec)
 {
 
-	if (m_Velocity.VNorm() != 0) //vermijd translatie met 0
+	if (m_Velocity.VNorm() != 0) //avoid translation with 0;
 	{
 		math::Translate(m_Pos, m_Velocity, m_Speed * elapsedSec);
 	}

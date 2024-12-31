@@ -1215,9 +1215,9 @@ extern DECLSPEC int SDLCALL SDL_RenderDrawPoints(SDL_Renderer * renderer,
                                                  int count);
 
 /**
- * Draw a line on the current rendering target.
+ * Draw a m_Line on the current rendering target.
  *
- * SDL_RenderDrawLine() draws the line to include both end points. If you want
+ * SDL_RenderDrawLine() draws the m_Line to include both end points. If you want
  * to draw multiple, connecting lines use SDL_RenderDrawLines() instead.
  *
  * \param renderer the rendering context
@@ -1487,9 +1487,9 @@ extern DECLSPEC int SDLCALL SDL_RenderDrawPointsF(SDL_Renderer * renderer,
                                                   int count);
 
 /**
- * Draw a line on the current rendering target at subpixel precision.
+ * Draw a m_Line on the current rendering target at subpixel precision.
  *
- * \param renderer The renderer which should draw a line.
+ * \param renderer The renderer which should draw a m_Line.
  * \param x1 The x coordinate of the start point.
  * \param y1 The y coordinate of the start point.
  * \param x2 The x coordinate of the end point.
@@ -1715,7 +1715,7 @@ extern DECLSPEC int SDLCALL SDL_RenderReadPixels(SDL_Renderer * renderer,
  *
  * SDL's rendering functions operate on a backbuffer; that is, calling a
  * rendering function such as SDL_RenderDrawLine() does not directly put a
- * line on the screen, but rather updates the backbuffer. As such, you compose
+ * m_Line on the screen, but rather updates the backbuffer. As such, you compose
  * your entire scene and *present* the composed backbuffer to the screen as a
  * complete picture.
  *

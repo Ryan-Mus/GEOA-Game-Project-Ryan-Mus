@@ -131,8 +131,8 @@ extern "C" {
 #endif
 
 /* This is a guess for the cacheline size used for padding.
- * Most x86 processors have a 64 byte cache line.
- * The 64-bit PowerPC processors have a 128 byte cache line.
+ * Most x86 processors have a 64 byte cache m_Line.
+ * The 64-bit PowerPC processors have a 128 byte cache m_Line.
  * We'll use the larger value to be generally safe.
  */
 #define SDL_CACHELINE_SIZE  128
@@ -149,12 +149,12 @@ extern "C" {
 extern DECLSPEC int SDLCALL SDL_GetCPUCount(void);
 
 /**
- * Determine the L1 cache line size of the CPU.
+ * Determine the L1 cache m_Line size of the CPU.
  *
  * This is useful for determining multi-threaded structure padding or SIMD
  * prefetch sizes.
  *
- * \returns the L1 cache line size of the CPU, in bytes.
+ * \returns the L1 cache m_Line size of the CPU, in bytes.
  *
  * \since This function is available since SDL 2.0.0.
  */

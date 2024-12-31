@@ -32,7 +32,7 @@
 
 #ifndef SDL_MAIN_HANDLED
 #if defined(__WIN32__)
-/* On Windows SDL provides WinMain(), which parses the command line and passes
+/* On Windows SDL provides WinMain(), which parses the command m_Line and passes
    the arguments to your main function.
 
    If you provide your own WinMain(), you may define SDL_MAIN_HANDLED

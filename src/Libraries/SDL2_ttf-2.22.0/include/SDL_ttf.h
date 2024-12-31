@@ -966,7 +966,7 @@ extern DECLSPEC int SDLCALL TTF_MeasureUNICODE(TTF_Font *font, const Uint16 *tex
  * 0 pixel will be the colorkey, giving a transparent background. The 1 pixel
  * will be set to the text color.
  *
- * This will not word-wrap the string; you'll get a surface with a single line
+ * This will not word-wrap the string; you'll get a surface with a single m_Line
  * of text, as long as the string requires. You can use
  * TTF_RenderText_Solid_Wrapped() instead if you need to wrap the output to
  * multiple lines.
@@ -1001,7 +1001,7 @@ extern DECLSPEC SDL_Surface * SDLCALL TTF_RenderText_Solid(TTF_Font *font,
  * 0 pixel will be the colorkey, giving a transparent background. The 1 pixel
  * will be set to the text color.
  *
- * This will not word-wrap the string; you'll get a surface with a single line
+ * This will not word-wrap the string; you'll get a surface with a single m_Line
  * of text, as long as the string requires. You can use
  * TTF_RenderUTF8_Solid_Wrapped() instead if you need to wrap the output to
  * multiple lines.
@@ -1032,7 +1032,7 @@ extern DECLSPEC SDL_Surface * SDLCALL TTF_RenderUTF8_Solid(TTF_Font *font,
  * 0 pixel will be the colorkey, giving a transparent background. The 1 pixel
  * will be set to the text color.
  *
- * This will not word-wrap the string; you'll get a surface with a single line
+ * This will not word-wrap the string; you'll get a surface with a single m_Line
  * of text, as long as the string requires. You can use
  * TTF_RenderUNICODE_Solid_Wrapped() instead if you need to wrap the output to
  * multiple lines.
@@ -1066,7 +1066,7 @@ extern DECLSPEC SDL_Surface * SDLCALL TTF_RenderUNICODE_Solid(TTF_Font *font,
  * 0 pixel will be the colorkey, giving a transparent background. The 1 pixel
  * will be set to the text color.
  *
- * Text is wrapped to multiple lines on line endings and on word boundaries if
+ * Text is wrapped to multiple lines on m_Line endings and on word boundaries if
  * it extends beyond `wrapLength` in pixels.
  *
  * If wrapLength is 0, this function will only wrap on newline characters.
@@ -1099,7 +1099,7 @@ extern DECLSPEC SDL_Surface * SDLCALL TTF_RenderText_Solid_Wrapped(TTF_Font *fon
  * 0 pixel will be the colorkey, giving a transparent background. The 1 pixel
  * will be set to the text color.
  *
- * Text is wrapped to multiple lines on line endings and on word boundaries if
+ * Text is wrapped to multiple lines on m_Line endings and on word boundaries if
  * it extends beyond `wrapLength` in pixels.
  *
  * If wrapLength is 0, this function will only wrap on newline characters.
@@ -1128,7 +1128,7 @@ extern DECLSPEC SDL_Surface * SDLCALL TTF_RenderUTF8_Solid_Wrapped(TTF_Font *fon
  * 0 pixel will be the colorkey, giving a transparent background. The 1 pixel
  * will be set to the text color.
  *
- * Text is wrapped to multiple lines on line endings and on word boundaries if
+ * Text is wrapped to multiple lines on m_Line endings and on word boundaries if
  * it extends beyond `wrapLength` in pixels.
  *
  * If wrapLength is 0, this function will only wrap on newline characters.
@@ -1228,7 +1228,7 @@ extern DECLSPEC SDL_Surface * SDLCALL TTF_RenderGlyph32_Solid(TTF_Font *font,
  * varying degrees of the foreground color. This function returns the new
  * surface, or NULL if there was an error.
  *
- * This will not word-wrap the string; you'll get a surface with a single line
+ * This will not word-wrap the string; you'll get a surface with a single m_Line
  * of text, as long as the string requires. You can use
  * TTF_RenderText_Shaded_Wrapped() instead if you need to wrap the output to
  * multiple lines.
@@ -1265,7 +1265,7 @@ extern DECLSPEC SDL_Surface * SDLCALL TTF_RenderText_Shaded(TTF_Font *font,
  * varying degrees of the foreground color. This function returns the new
  * surface, or NULL if there was an error.
  *
- * This will not word-wrap the string; you'll get a surface with a single line
+ * This will not word-wrap the string; you'll get a surface with a single m_Line
  * of text, as long as the string requires. You can use
  * TTF_RenderUTF8_Shaded_Wrapped() instead if you need to wrap the output to
  * multiple lines.
@@ -1296,7 +1296,7 @@ extern DECLSPEC SDL_Surface * SDLCALL TTF_RenderUTF8_Shaded(TTF_Font *font,
  * varying degrees of the foreground color. This function returns the new
  * surface, or NULL if there was an error.
  *
- * This will not word-wrap the string; you'll get a surface with a single line
+ * This will not word-wrap the string; you'll get a surface with a single m_Line
  * of text, as long as the string requires. You can use
  * TTF_RenderUNICODE_Shaded_Wrapped() instead if you need to wrap the output
  * to multiple lines.
@@ -1331,7 +1331,7 @@ extern DECLSPEC SDL_Surface * SDLCALL TTF_RenderUNICODE_Shaded(TTF_Font *font,
  * varying degrees of the foreground color. This function returns the new
  * surface, or NULL if there was an error.
  *
- * Text is wrapped to multiple lines on line endings and on word boundaries if
+ * Text is wrapped to multiple lines on m_Line endings and on word boundaries if
  * it extends beyond `wrapLength` in pixels.
  *
  * If wrapLength is 0, this function will only wrap on newline characters.
@@ -1366,7 +1366,7 @@ extern DECLSPEC SDL_Surface * SDLCALL TTF_RenderText_Shaded_Wrapped(TTF_Font *fo
  * varying degrees of the foreground color. This function returns the new
  * surface, or NULL if there was an error.
  *
- * Text is wrapped to multiple lines on line endings and on word boundaries if
+ * Text is wrapped to multiple lines on m_Line endings and on word boundaries if
  * it extends beyond `wrapLength` in pixels.
  *
  * If wrapLength is 0, this function will only wrap on newline characters.
@@ -1396,7 +1396,7 @@ extern DECLSPEC SDL_Surface * SDLCALL TTF_RenderUTF8_Shaded_Wrapped(TTF_Font *fo
  * varying degrees of the foreground color. This function returns the new
  * surface, or NULL if there was an error.
  *
- * Text is wrapped to multiple lines on line endings and on word boundaries if
+ * Text is wrapped to multiple lines on m_Line endings and on word boundaries if
  * it extends beyond `wrapLength` in pixels.
  *
  * If wrapLength is 0, this function will only wrap on newline characters.
@@ -1498,7 +1498,7 @@ extern DECLSPEC SDL_Surface * SDLCALL TTF_RenderGlyph32_Shaded(TTF_Font *font,
  * blending to dither the font with the given color. This function returns the
  * new surface, or NULL if there was an error.
  *
- * This will not word-wrap the string; you'll get a surface with a single line
+ * This will not word-wrap the string; you'll get a surface with a single m_Line
  * of text, as long as the string requires. You can use
  * TTF_RenderText_Blended_Wrapped() instead if you need to wrap the output to
  * multiple lines.
@@ -1533,7 +1533,7 @@ extern DECLSPEC SDL_Surface * SDLCALL TTF_RenderText_Blended(TTF_Font *font,
  * blending to dither the font with the given color. This function returns the
  * new surface, or NULL if there was an error.
  *
- * This will not word-wrap the string; you'll get a surface with a single line
+ * This will not word-wrap the string; you'll get a surface with a single m_Line
  * of text, as long as the string requires. You can use
  * TTF_RenderUTF8_Blended_Wrapped() instead if you need to wrap the output to
  * multiple lines.
@@ -1562,7 +1562,7 @@ extern DECLSPEC SDL_Surface * SDLCALL TTF_RenderUTF8_Blended(TTF_Font *font,
  * blending to dither the font with the given color. This function returns the
  * new surface, or NULL if there was an error.
  *
- * This will not word-wrap the string; you'll get a surface with a single line
+ * This will not word-wrap the string; you'll get a surface with a single m_Line
  * of text, as long as the string requires. You can use
  * TTF_RenderUNICODE_Blended_Wrapped() instead if you need to wrap the output
  * to multiple lines.
@@ -1596,7 +1596,7 @@ extern DECLSPEC SDL_Surface * SDLCALL TTF_RenderUNICODE_Blended(TTF_Font *font,
  * blending to dither the font with the given color. This function returns the
  * new surface, or NULL if there was an error.
  *
- * Text is wrapped to multiple lines on line endings and on word boundaries if
+ * Text is wrapped to multiple lines on m_Line endings and on word boundaries if
  * it extends beyond `wrapLength` in pixels.
  *
  * If wrapLength is 0, this function will only wrap on newline characters.
@@ -1629,7 +1629,7 @@ extern DECLSPEC SDL_Surface * SDLCALL TTF_RenderText_Blended_Wrapped(TTF_Font *f
  * blending to dither the font with the given color. This function returns the
  * new surface, or NULL if there was an error.
  *
- * Text is wrapped to multiple lines on line endings and on word boundaries if
+ * Text is wrapped to multiple lines on m_Line endings and on word boundaries if
  * it extends beyond `wrapLength` in pixels.
  *
  * If wrapLength is 0, this function will only wrap on newline characters.
@@ -1658,7 +1658,7 @@ extern DECLSPEC SDL_Surface * SDLCALL TTF_RenderUTF8_Blended_Wrapped(TTF_Font *f
  * blending to dither the font with the given color. This function returns the
  * new surface, or NULL if there was an error.
  *
- * Text is wrapped to multiple lines on line endings and on word boundaries if
+ * Text is wrapped to multiple lines on m_Line endings and on word boundaries if
  * it extends beyond `wrapLength` in pixels.
  *
  * If wrapLength is 0, this function will only wrap on newline characters.
@@ -1757,7 +1757,7 @@ extern DECLSPEC SDL_Surface * SDLCALL TTF_RenderGlyph32_Blended(TTF_Font *font,
  * alpha-blended text using FreeType's LCD subpixel rendering. This function
  * returns the new surface, or NULL if there was an error.
  *
- * This will not word-wrap the string; you'll get a surface with a single line
+ * This will not word-wrap the string; you'll get a surface with a single m_Line
  * of text, as long as the string requires. You can use
  * TTF_RenderText_LCD_Wrapped() instead if you need to wrap the output to
  * multiple lines.
@@ -1793,7 +1793,7 @@ extern DECLSPEC SDL_Surface * SDLCALL TTF_RenderText_LCD(TTF_Font *font,
  * alpha-blended text using FreeType's LCD subpixel rendering. This function
  * returns the new surface, or NULL if there was an error.
  *
- * This will not word-wrap the string; you'll get a surface with a single line
+ * This will not word-wrap the string; you'll get a surface with a single m_Line
  * of text, as long as the string requires. You can use
  * TTF_RenderUTF8_LCD_Wrapped() instead if you need to wrap the output to
  * multiple lines.
@@ -1823,7 +1823,7 @@ extern DECLSPEC SDL_Surface * SDLCALL TTF_RenderUTF8_LCD(TTF_Font *font,
  * alpha-blended text using FreeType's LCD subpixel rendering. This function
  * returns the new surface, or NULL if there was an error.
  *
- * This will not word-wrap the string; you'll get a surface with a single line
+ * This will not word-wrap the string; you'll get a surface with a single m_Line
  * of text, as long as the string requires. You can use
  * TTF_RenderUNICODE_LCD_Wrapped() instead if you need to wrap the output to
  * multiple lines.
@@ -1859,7 +1859,7 @@ extern DECLSPEC SDL_Surface * SDLCALL TTF_RenderUNICODE_LCD(TTF_Font *font,
  * alpha-blended text using FreeType's LCD subpixel rendering. This function
  * returns the new surface, or NULL if there was an error.
  *
- * Text is wrapped to multiple lines on line endings and on word boundaries if
+ * Text is wrapped to multiple lines on m_Line endings and on word boundaries if
  * it extends beyond `wrapLength` in pixels.
  *
  * If wrapLength is 0, this function will only wrap on newline characters.
@@ -1894,7 +1894,7 @@ extern DECLSPEC SDL_Surface * SDLCALL TTF_RenderText_LCD_Wrapped(TTF_Font *font,
  * alpha-blended text using FreeType's LCD subpixel rendering. This function
  * returns the new surface, or NULL if there was an error.
  *
- * Text is wrapped to multiple lines on line endings and on word boundaries if
+ * Text is wrapped to multiple lines on m_Line endings and on word boundaries if
  * it extends beyond `wrapLength` in pixels.
  *
  * If wrapLength is 0, this function will only wrap on newline characters.
@@ -1925,7 +1925,7 @@ extern DECLSPEC SDL_Surface * SDLCALL TTF_RenderUTF8_LCD_Wrapped(TTF_Font *font,
  * alpha-blended text using FreeType's LCD subpixel rendering. This function
  * returns the new surface, or NULL if there was an error.
  *
- * Text is wrapped to multiple lines on line endings and on word boundaries if
+ * Text is wrapped to multiple lines on m_Line endings and on word boundaries if
  * it extends beyond `wrapLength` in pixels.
  *
  * If wrapLength is 0, this function will only wrap on newline characters.

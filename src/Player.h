@@ -19,12 +19,12 @@ public:
 
 	void HandleInput(IsPressed keysPressed);
 
-	TwoBlade GetVelocity() { return m_Velocity; };
-	ThreeBlade GetPos() { return m_Pos; };
-	void SetPos(const ThreeBlade& point) { m_Pos = point; };
+	TwoBlade GetVelocity()	const { return m_Velocity; };
+	ThreeBlade GetPos()		const { return m_Pos; };
+	float GetEnergy()		const { return m_Pos[2]; };
 
-	float GetEnergy() { return m_Pos[2]; };
-	void  LoseEnergy(float amount) { m_Pos[2] -= amount; };
+	void SetPos(const ThreeBlade& point)	{ m_Pos = point; };
+	void LoseEnergy(float amount)			{m_Pos[2] -= amount; };
 private:
 	ThreeBlade m_Pos{};
 	TwoBlade m_Velocity{};

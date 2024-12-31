@@ -4,7 +4,7 @@
 struct Window
 {
 	explicit Window( const std::string& title = "Ryan Mus PGA", float width = 320.0f, 
-		float height = 180.0f, bool isVSyncOn = false );
+		float height = 180.0f, bool isVSyncOn = true );
 
 	std::string title;
 	float width;

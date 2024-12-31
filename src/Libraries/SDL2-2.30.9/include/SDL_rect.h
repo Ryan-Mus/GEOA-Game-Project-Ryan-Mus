@@ -202,19 +202,19 @@ extern DECLSPEC SDL_bool SDLCALL SDL_EnclosePoints(const SDL_Point * points,
                                                    SDL_Rect * result);
 
 /**
- * Calculate the intersection of a rectangle and line segment.
+ * Calculate the intersection of a rectangle and m_Line segment.
  *
- * This function is used to clip a line segment to a rectangle. A line segment
+ * This function is used to clip a m_Line segment to a rectangle. A m_Line segment
  * contained entirely within the rectangle or that does not intersect will
- * remain unchanged. A line segment that crosses the rectangle at either or
+ * remain unchanged. A m_Line segment that crosses the rectangle at either or
  * both ends will be clipped to the boundary of the rectangle and the new
  * coordinates saved in `X1`, `Y1`, `X2`, and/or `Y2` as necessary.
  *
  * \param rect an SDL_Rect structure representing the rectangle to intersect
- * \param X1 a pointer to the starting X-coordinate of the line
- * \param Y1 a pointer to the starting Y-coordinate of the line
- * \param X2 a pointer to the ending X-coordinate of the line
- * \param Y2 a pointer to the ending Y-coordinate of the line
+ * \param X1 a pointer to the starting X-coordinate of the m_Line
+ * \param Y1 a pointer to the starting Y-coordinate of the m_Line
+ * \param X2 a pointer to the ending X-coordinate of the m_Line
+ * \param Y2 a pointer to the ending Y-coordinate of the m_Line
  * \returns SDL_TRUE if there is an intersection, SDL_FALSE otherwise.
  *
  * \since This function is available since SDL 2.0.0.
@@ -342,20 +342,20 @@ extern DECLSPEC SDL_bool SDLCALL SDL_EncloseFPoints(const SDL_FPoint * points,
                                                     SDL_FRect * result);
 
 /**
- * Calculate the intersection of a rectangle and line segment with float
+ * Calculate the intersection of a rectangle and m_Line segment with float
  * precision.
  *
- * This function is used to clip a line segment to a rectangle. A line segment
+ * This function is used to clip a m_Line segment to a rectangle. A m_Line segment
  * contained entirely within the rectangle or that does not intersect will
- * remain unchanged. A line segment that crosses the rectangle at either or
+ * remain unchanged. A m_Line segment that crosses the rectangle at either or
  * both ends will be clipped to the boundary of the rectangle and the new
  * coordinates saved in `X1`, `Y1`, `X2`, and/or `Y2` as necessary.
  *
  * \param rect an SDL_FRect structure representing the rectangle to intersect
- * \param X1 a pointer to the starting X-coordinate of the line
- * \param Y1 a pointer to the starting Y-coordinate of the line
- * \param X2 a pointer to the ending X-coordinate of the line
- * \param Y2 a pointer to the ending Y-coordinate of the line
+ * \param X1 a pointer to the starting X-coordinate of the m_Line
+ * \param Y1 a pointer to the starting Y-coordinate of the m_Line
+ * \param X2 a pointer to the ending X-coordinate of the m_Line
+ * \param Y2 a pointer to the ending Y-coordinate of the m_Line
  * \returns SDL_TRUE if there is an intersection, SDL_FALSE otherwise.
  *
  * \since This function is available since SDL 2.0.22.

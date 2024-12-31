@@ -19,12 +19,13 @@ Bullet::Bullet(const ThreeBlade& pos, const TwoBlade& velocity): m_Pos{pos},m_Ve
 void Bullet::Update(float elapsedSec)
 {
 	math::Translate(m_Pos, m_Velocity, m_Speed * elapsedSec);
+	m_Pos[2] -= elapsedSec; //life duration
 }
 
 void Bullet::Draw() const
 {
 	//std::cout << (m_Pos/m_Pos.VNorm()) << std::endl;
-	utils::SetColor(Color4f{ m_Pos[0]/m_Pos.VNorm(), m_Pos[1] / m_Pos.VNorm(), m_Pos[2] / m_Pos.VNorm(),1.f});
+	utils::SetColor(Color4f{ 1-m_Pos[2]/10.f,m_Pos[2]/10.f,0,1.f});
 	utils::FillEllipse(m_Pos[0], m_Pos[1], 5.f, 5.f);
 }
 

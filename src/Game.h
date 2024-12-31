@@ -2,10 +2,11 @@
 #include "structs.h"
 #include "SDL.h"
 #include "SDL_opengl.h"
-#include "FlyFish.h"
 #include "Player.h"
-#include "Bullet.h"
+#include "Pillar.h"
 #include <vector>
+#include <deque>
+#include <memory>
 #include <iostream>
 
 class Game
@@ -85,7 +86,7 @@ public:
 			TwoBlade velocity{ mousePos.x - playerPos[0],mousePos.y - playerPos[1],0,0,0,0 };
 			velocity /= velocity.VNorm();
 
-			m_Bullets.emplace_back(Bullet{ playerPos,velocity });
+			m_Bullets.emplace_back(Bullet{ ThreeBlade{playerPos[0],playerPos[1],10.f,playerPos[3]},velocity });
 			m_pPlayer->LoseEnergy(100.f);
 		}
 		else std::cout << "No energy: " << m_pPlayer->GetEnergy() << std::endl;
@@ -124,7 +125,7 @@ private:
 	void BulletBorderCheck();
 
 	//Player
-	Player* m_pPlayer{};
+	std::unique_ptr<Player> m_pPlayer{};
 
 	//Border
 	OneBlade m_BottomBorder{ 0,0,1,0 };
@@ -133,12 +134,16 @@ private:
 	OneBlade m_RightBorder{ -m_Window.width,1,0,0 };
 
 	//Rotate around line
-	TwoBlade m_Pillar{ m_Window.width / 2.f,m_Window.height / 2.f,0,0,0,1 };
+	Pillar m_Pillar{ TwoBlade{m_Window.width/2,m_Window.height/2,0,0,0,1} ,200,240.f};
 
 	OneBlade m_Plane{ (m_Window.width-10.f)/2.f / 2,1,1,0 };
 	
 	//Keys being pressed;
 	IsPressed m_KeysPressed{};
 
-	std::vector<Bullet> m_Bullets;
+	//Bullets
+	std::deque<Bullet> m_Bullets;
+
+	//update
+	const int SUBSTEPS{ 8 };
 };

@@ -43,7 +43,7 @@ extern "C" {
 
 /*
 These are macros and not first class functions so that the debugger breaks
-on the assertion line and not in some random guts of SDL, and so each
+on the assertion m_Line and not in some random guts of SDL, and so each
 assert can have unique static variables associated with it.
 */
 

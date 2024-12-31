@@ -14,7 +14,7 @@ namespace math
     }
     inline float GetDistance(const ThreeBlade& point1, const ThreeBlade& point2)
     {
-        return TwoBlade::LineFromPoints(point1[0], point1[1], 0.f, point2[0], point2[1], point2[2]).VNorm();
+        return TwoBlade::LineFromPoints(point1[0], point1[1], 0.f, point2[0], point2[1], 0.f).Norm();
     }
 
     //Check Normalis
@@ -31,7 +31,7 @@ namespace math
         return std::abs(point.Norm() - 1.f) < 1e-6;
     }
 
-    //Rotate around a given line
+    //Rotate around a given m_Line
     inline void RotateAroundLine(TwoBlade& line, const TwoBlade& rotationLine, float degrees)
     {
         Motor Translator1{ Motor::Translation(-rotationLine.VNorm(), TwoBlade::LineFromPoints(0, 0, 1, rotationLine[0], rotationLine[1], 1).Normalized()) };
@@ -49,16 +49,16 @@ namespace math
         point = (Translator2 * Rotator * Translator1 * point * ~Translator1 * ~Rotator * ~Translator2).Grade3();
     }
 
-    //Translate with line as direction
+    //Translate with m_Line as direction
     inline void Translate(ThreeBlade& point, const TwoBlade& direction, float distance)
     {
         Motor translator{ Motor::Translation(distance, direction) };
         point = (translator * point * ~translator).Grade3();
     }
-    inline void Translate(TwoBlade& line, const TwoBlade& direction, float distance)
+    inline void Translate(TwoBlade& m_Line, const TwoBlade& direction, float distance)
     {
         Motor translator{ Motor::Translation(distance, direction) };
-        line = (translator * line * ~translator).Grade2();
+        m_Line = (translator * m_Line * ~translator).Grade2();
     }
     inline void Translate(OneBlade& plane, const TwoBlade& direction, float distance)
     {

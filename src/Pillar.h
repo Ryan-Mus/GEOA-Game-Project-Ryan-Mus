@@ -1,36 +1,35 @@
-#pragma once
 
 //-----------------------------------------------------
 // Include Files
 //-----------------------------------------------------
+#pragma once
 #include "MathHelp.h"
+#include "utils.h"
+#include "Bullet.h"
+#include <deque>
 
 //-----------------------------------------------------
 // Pillar Class									
 //-----------------------------------------------------
-class Bullet final
+class Pillar final
 {
 public:
-	Bullet(const ThreeBlade& pos, const TwoBlade& velocity);	// Constructor
-	~Bullet() = default;										// Destructor
+	Pillar(TwoBlade line, float radius = 50.f,float speed = 120.f);			// Constructor
+	~Pillar() = default;				// Destructor
 
 	// -------------------------
 	// Copy/move constructors and assignment operators
 	// -------------------------    
-	Bullet(const Bullet& other)					= default;
-	Bullet(Bullet&& other) noexcept				= default;
-	Bullet& operator=(const Bullet& other)		= default;
-	Bullet& operator=(Bullet&& other)	noexcept	= default;
+	Pillar(const Pillar& other)					= default;
+	Pillar(Pillar&& other) noexcept				= default;
+	Pillar& operator=(const Pillar& other)		= default;
+	Pillar& operator=(Pillar&& other)	noexcept	= default;
 
 	//-------------------------------------------------
 	// Member functions						
 	//-------------------------------------------------
-	void Update(float elapsedSec);
 	void Draw() const;
-	void RotateBullet(const TwoBlade& line, float degrees);
-	void ReflectBullet(const OneBlade& plane);
-
-	ThreeBlade GetPos() const { return m_Pos; };
+	void Update(float elapsedSec,std::deque<Bullet>& bullets, ThreeBlade& playerPos);
 
 
 private: 
@@ -38,11 +37,12 @@ private:
 	// Private member functions								
 	//-------------------------------------------------
 
+
 	//-------------------------------------------------
 	// Datamembers								
 	//-------------------------------------------------
-	ThreeBlade m_Pos;
-	TwoBlade m_Velocity;
+	TwoBlade m_Line;
+	float m_Radius;
 	float m_Speed;
 	
 };
