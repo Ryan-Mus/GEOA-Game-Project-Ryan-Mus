@@ -35,6 +35,11 @@ void Bullet::RotateBullet(const TwoBlade& line, float degrees)
 	math::RotateAroundLine(m_Velocity, line, degrees);
 }
 
+void Bullet::TranslateBullet(const TwoBlade& line, float distance)
+{
+	math::Translate(m_Pos, line, distance);
+}
+
 void Bullet::ReflectBullet(const OneBlade& plane)
 {
 	m_Velocity = (plane * m_Velocity * ~plane).Grade2();

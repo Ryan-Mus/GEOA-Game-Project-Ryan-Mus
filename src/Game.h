@@ -4,8 +4,9 @@
 #include "SDL_opengl.h"
 #include "Player.h"
 #include "Pillar.h"
+#include "PillarBullet.h"
+#include "Enemy.h"
 #include <vector>
-#include <deque>
 #include <memory>
 #include <iostream>
 
@@ -79,7 +80,7 @@ public:
 	}
 	void ProcessMouseDownEvent(const SDL_MouseButtonEvent& e)
 	{
-		if (m_pPlayer->GetEnergy() > 100.f)
+		if (m_pPlayer->GetEnergy() > 100.f and e.button == SDL_BUTTON_LEFT)
 		{
 			Point2f mousePos{ static_cast<float>(e.x),static_cast<float>(e.y) };
 			ThreeBlade playerPos{ m_pPlayer->GetPos() };
@@ -89,7 +90,23 @@ public:
 			m_Bullets.emplace_back(Bullet{ ThreeBlade{playerPos[0],playerPos[1],10.f,playerPos[3]},velocity });
 			m_pPlayer->LoseEnergy(100.f);
 		}
-		else std::cout << "No energy: " << m_pPlayer->GetEnergy() << std::endl;
+		else if (m_pPlayer->GetEnergy() > 1000.f and e.button == SDL_BUTTON_RIGHT)
+		{
+			Point2f mousePos{ static_cast<float>(e.x),static_cast<float>(e.y) };
+			ThreeBlade playerPos{ m_pPlayer->GetPos() };
+			TwoBlade velocity{ mousePos.x - playerPos[0],mousePos.y - playerPos[1],0,0,0,0 };
+			velocity /= velocity.VNorm();
+			if (playerPos[0] < 100) playerPos[0] = 101.f;
+			if (playerPos[1] < 100) playerPos[1] = 101.f;
+			if (playerPos[0] > m_Window.width - 100.f) playerPos[0] = m_Window.width - 101.f;
+			if (playerPos[1] > m_Window.height- 100.f) playerPos[1] = m_Window.height - 101.f;
+			m_PillarBullets.emplace_back(PillarBullet{ThreeBlade{playerPos[0],playerPos[1],0,0},velocity,300.f});
+			m_pPlayer->LoseEnergy(1000.f);
+		}
+		else
+		{
+			std::cout << "No energy: " << m_pPlayer->GetEnergy() << std::endl;
+		}
 	}
 	void ProcessMouseUpEvent(const SDL_MouseButtonEvent& e)
 	{
@@ -133,16 +150,18 @@ private:
 	OneBlade m_LeftBorder{ 0,1,0,0 };
 	OneBlade m_RightBorder{ -m_Window.width,1,0,0 };
 
-	//Rotate around line
-	Pillar m_Pillar{ TwoBlade{m_Window.width/2,m_Window.height/2,0,0,0,1} ,200,240.f};
-
-	OneBlade m_Plane{ (m_Window.width-10.f)/2.f / 2,1,1,0 };
+	//Pillar
+	Pillar m_Pillar{ TwoBlade{m_Window.width/2,m_Window.height/2,0,0,0,1} ,200,120.f};
 	
 	//Keys being pressed;
 	IsPressed m_KeysPressed{};
 
 	//Bullets
 	std::deque<Bullet> m_Bullets;
+	std::deque<PillarBullet> m_PillarBullets;
+
+	//Enemies
+	std::vector<Enemy> m_Enemies;
 
 	//update
 	const int SUBSTEPS{ 8 };

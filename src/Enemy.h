@@ -4,45 +4,45 @@
 // Include Files
 //-----------------------------------------------------
 #include "MathHelp.h"
-
 //-----------------------------------------------------
-// Pillar Class									
+// Enemy Class									
 //-----------------------------------------------------
-class Bullet final
+class Enemy final
 {
 public:
-	Bullet(const ThreeBlade& pos, const TwoBlade& velocity);	// Constructor
-	~Bullet() = default;										// Destructor
+	Enemy(const ThreeBlade& spawnPoint);	// Constructor
+	~Enemy() = default;						// Destructor
 
 	// -------------------------
 	// Copy/move constructors and assignment operators
 	// -------------------------    
-	Bullet(const Bullet& other)					= default;
-	Bullet(Bullet&& other) noexcept				= default;
-	Bullet& operator=(const Bullet& other)		= default;
-	Bullet& operator=(Bullet&& other)	noexcept	= default;
+	Enemy(const Enemy& other)					= default;
+	Enemy(Enemy&& other) noexcept				= default;
+	Enemy& operator=(const Enemy& other)		= default;
+	Enemy& operator=(Enemy&& other)	noexcept	= default;
 
 	//-------------------------------------------------
 	// Member functions						
 	//-------------------------------------------------
-	void Update(float elapsedSec);
+	void Update(float elapsedSec, const ThreeBlade& playerPos);
 	void Draw() const;
-	void RotateBullet(const TwoBlade& line, float degrees);
-	void TranslateBullet(const TwoBlade& line, float distance);
-	void ReflectBullet(const OneBlade& plane);
-
+	
 	ThreeBlade GetPos() const { return m_Pos; };
+	int GetHealth() const { return m_Health; };
+	void LoseHealth(int amount) { m_Health -= amount; };
+
 private: 
 	//-------------------------------------------------
 	// Private member functions								
 	//-------------------------------------------------
 
+
 	//-------------------------------------------------
 	// Datamembers								
 	//-------------------------------------------------
 	ThreeBlade m_Pos;
-	TwoBlade m_Velocity;
-	float m_Speed;
+	int m_Health;
+	float Speed{ 250.f };
 };
 
  

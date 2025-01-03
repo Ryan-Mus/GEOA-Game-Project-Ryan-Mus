@@ -12,7 +12,7 @@ struct IsPressed
 class Player
 {
 public:
-	Player(ThreeBlade pos);
+	Player(const ThreeBlade& pos);
 	
 	void DrawPlayer() const;
 	void UpdatePlayer(IsPressed keysPressed, float elapsedSec);
@@ -25,9 +25,11 @@ public:
 
 	void SetPos(const ThreeBlade& point)	{ m_Pos = point; };
 	void LoseEnergy(float amount)			{m_Pos[2] -= amount; };
+	void LoseHealth(int amount)				{ Health -= amount;	 };
 private:
 	ThreeBlade m_Pos{};
 	TwoBlade m_Velocity{};
 	float m_Size{ 30 };
 	float m_Speed{ 300.f };
+	int Health{ 100 };
 };

@@ -197,6 +197,10 @@ void Game::InitializeVariables()
 {
 	m_pPlayer = std::make_unique<Player>(ThreeBlade{200.f, m_Window.height / 2.f,0.f});
 	Motor translator{ Motor::Translation(m_Window.height,TwoBlade{0,1,0,0,0,0}) };;
+	m_Enemies.reserve(8);
+	m_Enemies.push_back(ThreeBlade{ m_Window.width,m_Window.height / 2,0,1 });
+	m_Enemies.push_back(ThreeBlade{ m_Window.width,m_Window.height ,0,1 });
+	m_Enemies.push_back(ThreeBlade{ m_Window.width,0,0,1 });
 }
 
 void Game::CleanUpVariables()
@@ -245,24 +249,65 @@ void Game::BulletBorderCheck()
 			m_Bullets[i].ReflectBullet(m_LeftBorder);
 		}
 	}
+	for (PillarBullet& pillarBullet : m_PillarBullets)
+	{
+		if (math::GetDistance(m_BottomBorder, pillarBullet.GetLine()) <= 100.f)
+		{
+			//std::cout << "Distance: " << math::GetDistance(m_BottomBorder, pillarBullet.GetLine()) << std::endl;
+			pillarBullet.ReflectBullet(m_BottomBorder);
+		}
+		if (math::GetDistance(m_BottomBorder, pillarBullet.GetLine()) >= m_Window.width - 100.f)
+		{
+			pillarBullet.ReflectBullet(m_BottomBorder);
+		}
+		if (math::GetDistance(m_LeftBorder, pillarBullet.GetLine()) <= 100.f)
+		{
+			pillarBullet.ReflectBullet(m_LeftBorder);
+		}
+		if (math::GetDistance(m_LeftBorder, pillarBullet.GetLine()) >= m_Window.height - 100.f)
+		{
+			pillarBullet.ReflectBullet(m_LeftBorder);
+		}
+	}
 }
 void Game::Update(float elapsedSec)
 {
-	std::cout << "Framerate: " << 1.f / elapsedSec << std::endl;
+	//std::cout << "Framerate: " << 1.f / elapsedSec << std::endl;
+
 	//Player Update
 	PlayerBorderCheck();
 
 	m_pPlayer->HandleInput(m_KeysPressed);
-	ThreeBlade pos{m_pPlayer->GetPos()};
-	m_Pillar.Update(elapsedSec, m_Bullets, pos);
+	m_pPlayer->UpdatePlayer(m_KeysPressed, elapsedSec);
+
+	//Pillar Update
+	ThreeBlade pos{ m_pPlayer->GetPos() };
+	m_Pillar.Update(elapsedSec, m_Bullets, pos,m_PillarBullets);
 	m_pPlayer->SetPos(pos);
 
-	m_pPlayer->UpdatePlayer(m_KeysPressed, elapsedSec);
-	
+	//Enemy Update
+	for (auto it = m_Enemies.begin(); it != m_Enemies.end();)
+	{
+		it->Update(elapsedSec, m_pPlayer->GetPos());
+
+		if (it->GetHealth() <= 0) {
+			it = m_Enemies.erase(it);  //Delete en go next
+		}
+		else if (math::GetDistance(it->GetPos(), m_pPlayer->GetPos()) < 15.f)
+		{
+			m_pPlayer->LoseHealth(20);
+			it = m_Enemies.erase(it);  //Delete en go next
+		}
+		else {
+			++it;  // Increment if none deleted
+		}
+	}
+
 	//substeps for better bullet updates
 	for (int i{}; i < SUBSTEPS; ++i)
 	{
 		BulletBorderCheck();
+		//Bullets
 		for (auto it = m_Bullets.begin(); it != m_Bullets.end();) 
 		{
 			it->Update(elapsedSec / SUBSTEPS);
@@ -273,13 +318,67 @@ void Game::Update(float elapsedSec)
 				m_Bullets.pop_front();
 				it = m_Bullets.begin(); // Reset iterator to begin
 			}
-			else if (math::GetDistance(m_pPlayer->GetPos(), it->GetPos()) < 15.f and it->GetPos()[2] < 9.9f) //Player Collision after 0.1s of firing
+			else if (math::GetDistance(m_pPlayer->GetPos(), it->GetPos()) < 15.f and it->GetPos()[2] < 9.5f) //Player Collision after 0.5s of firing
 			{
+				m_pPlayer->LoseHealth(10);
 				it = m_Bullets.erase(it);
 			}
-			else 
+			else
 			{
-				++it; //Next bullet
+				bool bulletErased = false;
+
+				// Collisions with enemy
+				for (auto enemyIt = m_Enemies.begin(); enemyIt != m_Enemies.end(); ++enemyIt)
+				{
+					if (math::GetDistance(enemyIt->GetPos(), it->GetPos()) < 15.f)
+					{
+						enemyIt->LoseHealth(50);
+						it = m_Bullets.erase(it); // Delete and go next
+						bulletErased = true;
+						break; // Go next bullet
+					}
+				}
+				if (!bulletErased)
+				{
+					++it;
+				}
+			}
+		}
+		//Pillar Bullets
+		for (auto it = m_PillarBullets.begin(); it != m_PillarBullets.end();)
+		{
+			it->Update(elapsedSec / SUBSTEPS,m_Bullets);
+
+			if (it == m_PillarBullets.begin() && it->GetLifeTime() < 0.f)
+			{
+				// if first bullet time is up pop_front
+				m_PillarBullets.pop_front();
+				it = m_PillarBullets.begin(); // Reset iterator to begin
+			}
+			else if (math::GetDistance( it->GetLine(), m_pPlayer->GetPos()) < 15.f and it->GetLifeTime() < 9.5f) //Player Collision after 0.5s of firing
+			{
+				m_pPlayer->LoseHealth(10);
+				it = m_PillarBullets.erase(it);
+			}
+			else
+			{
+				bool bulletErased = false;
+
+				// Enemy Collision
+				for (auto enemyIt = m_Enemies.begin(); enemyIt != m_Enemies.end(); ++enemyIt)
+				{
+					if (math::GetDistance(it->GetLine(), enemyIt->GetPos()) < 15.f)
+					{
+						enemyIt->LoseHealth(50);
+						it = m_PillarBullets.erase(it); // Delete en go next
+						bulletErased = true;
+						break; // Go next bullet
+					}
+				}
+				if (!bulletErased)
+				{
+					++it;
+				}
 			}
 		}
 	}
@@ -294,9 +393,16 @@ void Game::Draw() const
 
 	m_Pillar.Draw();
 
+	for (const Enemy& enemy : m_Enemies)
+	{
+		enemy.Draw();
+	}
 	for (const Bullet& bullet : m_Bullets)
 	{
 		bullet.Draw();
 	}
-	
+	for (const PillarBullet& pillarBullet : m_PillarBullets)
+	{
+		pillarBullet.Draw();
+	}
 }

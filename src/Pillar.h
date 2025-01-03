@@ -6,11 +6,13 @@
 #include "MathHelp.h"
 #include "utils.h"
 #include "Bullet.h"
+
 #include <deque>
 
 //-----------------------------------------------------
 // Pillar Class									
 //-----------------------------------------------------
+class PillarBullet; //forward declaration
 class Pillar final
 {
 public:
@@ -29,7 +31,18 @@ public:
 	// Member functions						
 	//-------------------------------------------------
 	void Draw() const;
+	//Bullet Pillar Update
+	void Update(float elapsedSec, std::deque<Bullet>& bullets);
 	void Update(float elapsedSec,std::deque<Bullet>& bullets, ThreeBlade& playerPos);
+	//Map Pillar update
+	void Update(float elapsedSec, std::deque<Bullet>& bullets, ThreeBlade& playerPos, std::deque<PillarBullet>& pillarBullets);
+
+	void Translate(const TwoBlade& direction, float distance)
+	{
+		math::Translate(m_Line, direction, distance);
+	}
+	void RotatePillar(const TwoBlade& line, float degrees);
+	TwoBlade GetLine() const { return m_Line; };
 
 
 private: 

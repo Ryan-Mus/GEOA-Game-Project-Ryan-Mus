@@ -5,15 +5,18 @@
 #include <iostream>
 
 
-Player::Player(ThreeBlade pos): m_Pos{pos}
+Player::Player(const ThreeBlade& pos): m_Pos{pos}
 {
 	std::cout << "Player created\n";
 }
 
 void Player::DrawPlayer() const
 {
-	utils::SetColor(Color4f{ 0.3f,0.3f,1.f,1.f });
+	utils::SetColor(Color4f{ 1-Health/100.f,Health/100.f,m_Pos[2]/1000.f,1.f });
 	utils::FillRect(m_Pos[0] - m_Size / 2, m_Pos[1] - m_Size / 2, m_Size, m_Size);
+
+	utils::SetColor(Color4f{ 1 - Health / 100.f,Health / 100.f,0,0.5f });
+	utils::FillRect(25, 25, Health*2, 25);
 }
 
 void Player::UpdatePlayer(IsPressed keysPressed,float elapsedSec)
