@@ -6,6 +6,7 @@
 #include "MathHelp.h"
 #include "utils.h"
 #include "Bullet.h"
+#include "Enemy.h"
 
 #include <deque>
 
@@ -33,16 +34,19 @@ public:
 	void Draw() const;
 	//Bullet Pillar Update
 	void Update(float elapsedSec, std::deque<Bullet>& bullets);
-	void Update(float elapsedSec,std::deque<Bullet>& bullets, ThreeBlade& playerPos);
+	void Update(float elapsedSec, std::deque<Bullet>& bullets, std::vector<Enemy>& enemies);
 	//Map Pillar update
-	void Update(float elapsedSec, std::deque<Bullet>& bullets, ThreeBlade& playerPos, std::deque<PillarBullet>& pillarBullets);
+	void Update(float elapsedSec, std::deque<Bullet>& bullets, ThreeBlade& playerPos, std::deque<PillarBullet>& pillarBullets,std::vector<Enemy>& enemies);
+	
 
 	void Translate(const TwoBlade& direction, float distance)
 	{
 		math::Translate(m_Line, direction, distance);
 	}
 	void RotatePillar(const TwoBlade& line, float degrees);
+
 	TwoBlade GetLine() const { return m_Line; };
+	void SetRadius(float radius) { m_Radius = radius; };
 
 
 private: 

@@ -26,6 +26,9 @@ public:
 	//-------------------------------------------------
 	void Update(float elapsedSec, const ThreeBlade& playerPos);
 	void Draw() const;
+
+	void RotateEnemy(const TwoBlade& line, float degrees);
+	void TranslateEnemy(const TwoBlade& line, float distance);
 	
 	ThreeBlade GetPos() const { return m_Pos; };
 	int GetHealth() const { return m_Health; };

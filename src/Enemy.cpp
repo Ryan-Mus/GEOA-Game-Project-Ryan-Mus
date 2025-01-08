@@ -22,6 +22,16 @@ void Enemy::Draw() const
 	utils::FillRect(m_Pos[0] - 30.f / 2, m_Pos[1] - 30.f / 2, 30.f, 30.f);
 }
 
+void Enemy::RotateEnemy(const TwoBlade& line, float degrees)
+{
+	math::RotateAroundLine(m_Pos, line, degrees);
+}
+
+void Enemy::TranslateEnemy(const TwoBlade& line, float distance)
+{
+	math::Translate(m_Pos, line, distance);
+}
+
 
 
 

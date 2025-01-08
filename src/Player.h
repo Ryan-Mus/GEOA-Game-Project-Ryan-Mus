@@ -22,10 +22,12 @@ public:
 	TwoBlade GetVelocity()	const { return m_Velocity; };
 	ThreeBlade GetPos()		const { return m_Pos; };
 	float GetEnergy()		const { return m_Pos[2]; };
+	int GetHealth()			const { return Health; };
 
 	void SetPos(const ThreeBlade& point)	{ m_Pos = point; };
 	void LoseEnergy(float amount)			{m_Pos[2] -= amount; };
 	void LoseHealth(int amount)				{ Health -= amount;	 };
+	
 private:
 	ThreeBlade m_Pos{};
 	TwoBlade m_Velocity{};

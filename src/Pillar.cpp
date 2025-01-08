@@ -34,39 +34,49 @@ void Pillar::Update(float elapsedSec, std::deque<Bullet>& bullets)
 	}
 }
 
-void Pillar::Update(float elapsedSec, std::deque<Bullet>& bullets, ThreeBlade& playerPos)
+void Pillar::Update(float elapsedSec, std::deque<Bullet>& bullets, std::vector<Enemy>& enemies)
 {
-	if (math::GetDistance(m_Line, playerPos) < m_Radius)
-	{
-		math::RotateAroundLine(playerPos, m_Line, m_Speed * elapsedSec);
-	}
-	for (Bullet& bullet : bullets)
+	for (auto& bullet : bullets)
 	{
 		if (math::GetDistance(m_Line, bullet.GetPos()) < m_Radius)
 		{
 			bullet.RotateBullet(m_Line, m_Speed * elapsedSec);
+		}
+	}
+	for (auto& enemy : enemies)
+	{
+		if (math::GetDistance(m_Line, enemy.GetPos()) < m_Radius)
+		{
+			enemy.RotateEnemy(m_Line, m_Speed * elapsedSec);
 		}
 	}
 }
 
-void Pillar::Update(float elapsedSec, std::deque<Bullet>& bullets, ThreeBlade& playerPos, std::deque<PillarBullet>& pillarBullets)
+void Pillar::Update(float elapsedSec, std::deque<Bullet>& bullets, ThreeBlade& playerPos, std::deque<PillarBullet>& pillarBullets, std::vector<Enemy>& enemies)
 {
 	if (math::GetDistance(m_Line, playerPos) < m_Radius)
 	{
 		math::RotateAroundLine(playerPos, m_Line, m_Speed * elapsedSec);
 	}
-	for (Bullet& bullet : bullets)
+	for (auto& bullet : bullets)
 	{
 		if (math::GetDistance(m_Line, bullet.GetPos()) < m_Radius)
 		{
 			bullet.RotateBullet(m_Line, m_Speed * elapsedSec);
 		}
 	}
-	for (PillarBullet& pillarBullet : pillarBullets)
+	for (auto& pillarBullet : pillarBullets)
 	{
 		if (math::GetDistance(m_Line, pillarBullet.GetLine()) < m_Radius)
 		{
 			pillarBullet.RotateBullet(m_Line, m_Speed * elapsedSec);
+		}
+	}
+	for (auto& enemy : enemies)
+	{
+		if (math::GetDistance(m_Line, enemy.GetPos()) < m_Radius)
+		{
+			enemy.RotateEnemy(m_Line, m_Speed * elapsedSec);
 		}
 	}
 }

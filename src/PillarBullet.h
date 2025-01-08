@@ -29,7 +29,7 @@ public:
     //-------------------------------------------------
     // Member functions						
     //-------------------------------------------------
-    void Update(float elapsedSec, std::deque<Bullet>& bullets);
+    void Update(float elapsedSec, std::deque<Bullet>& bullets, std::vector<Enemy>& enemies);
     void Draw() const;
 
     TwoBlade GetLine() const;

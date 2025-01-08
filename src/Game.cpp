@@ -198,9 +198,6 @@ void Game::InitializeVariables()
 	m_pPlayer = std::make_unique<Player>(ThreeBlade{200.f, m_Window.height / 2.f,0.f});
 	Motor translator{ Motor::Translation(m_Window.height,TwoBlade{0,1,0,0,0,0}) };;
 	m_Enemies.reserve(8);
-	m_Enemies.push_back(ThreeBlade{ m_Window.width,m_Window.height / 2,0,1 });
-	m_Enemies.push_back(ThreeBlade{ m_Window.width,m_Window.height ,0,1 });
-	m_Enemies.push_back(ThreeBlade{ m_Window.width,0,0,1 });
 }
 
 void Game::CleanUpVariables()
@@ -270,21 +267,8 @@ void Game::BulletBorderCheck()
 		}
 	}
 }
-void Game::Update(float elapsedSec)
+void Game::UpdateEnemies(float elapsedSec)
 {
-	//std::cout << "Framerate: " << 1.f / elapsedSec << std::endl;
-
-	//Player Update
-	PlayerBorderCheck();
-
-	m_pPlayer->HandleInput(m_KeysPressed);
-	m_pPlayer->UpdatePlayer(m_KeysPressed, elapsedSec);
-
-	//Pillar Update
-	ThreeBlade pos{ m_pPlayer->GetPos() };
-	m_Pillar.Update(elapsedSec, m_Bullets, pos,m_PillarBullets);
-	m_pPlayer->SetPos(pos);
-
 	//Enemy Update
 	for (auto it = m_Enemies.begin(); it != m_Enemies.end();)
 	{
@@ -292,6 +276,8 @@ void Game::Update(float elapsedSec)
 
 		if (it->GetHealth() <= 0) {
 			it = m_Enemies.erase(it);  //Delete en go next
+			m_Score += 100;
+			std::cout << "Your current score is " << m_Score << std::endl;
 		}
 		else if (math::GetDistance(it->GetPos(), m_pPlayer->GetPos()) < 15.f)
 		{
@@ -302,17 +288,19 @@ void Game::Update(float elapsedSec)
 			++it;  // Increment if none deleted
 		}
 	}
-
+}
+void Game::UpdateBullets(float elapsedSec)
+{
 	//substeps for better bullet updates
 	for (int i{}; i < SUBSTEPS; ++i)
 	{
 		BulletBorderCheck();
 		//Bullets
-		for (auto it = m_Bullets.begin(); it != m_Bullets.end();) 
+		for (auto it = m_Bullets.begin(); it != m_Bullets.end();)
 		{
 			it->Update(elapsedSec / SUBSTEPS);
 
-			if (it == m_Bullets.begin() && it->GetPos()[2] < 0.f) 
+			if (it == m_Bullets.begin() && it->GetPos()[2] < 0.f)
 			{
 				// if first bullet time is up pop_front
 				m_Bullets.pop_front();
@@ -347,7 +335,7 @@ void Game::Update(float elapsedSec)
 		//Pillar Bullets
 		for (auto it = m_PillarBullets.begin(); it != m_PillarBullets.end();)
 		{
-			it->Update(elapsedSec / SUBSTEPS,m_Bullets);
+			it->Update(elapsedSec / SUBSTEPS, m_Bullets, m_Enemies);
 
 			if (it == m_PillarBullets.begin() && it->GetLifeTime() < 0.f)
 			{
@@ -355,33 +343,87 @@ void Game::Update(float elapsedSec)
 				m_PillarBullets.pop_front();
 				it = m_PillarBullets.begin(); // Reset iterator to begin
 			}
-			else if (math::GetDistance( it->GetLine(), m_pPlayer->GetPos()) < 15.f and it->GetLifeTime() < 9.5f) //Player Collision after 0.5s of firing
+			else if (math::GetDistance(it->GetLine(), m_pPlayer->GetPos()) < 15.f and it->GetLifeTime() < 9.5f) //Player Collision after 0.5s of firing
 			{
 				m_pPlayer->LoseHealth(10);
 				it = m_PillarBullets.erase(it);
 			}
 			else
 			{
-				bool bulletErased = false;
-
 				// Enemy Collision
 				for (auto enemyIt = m_Enemies.begin(); enemyIt != m_Enemies.end(); ++enemyIt)
 				{
 					if (math::GetDistance(it->GetLine(), enemyIt->GetPos()) < 15.f)
 					{
 						enemyIt->LoseHealth(50);
-						it = m_PillarBullets.erase(it); // Delete en go next
-						bulletErased = true;
+						
 						break; // Go next bullet
 					}
 				}
-				if (!bulletErased)
-				{
-					++it;
-				}
+				++it;	
 			}
 		}
 	}
+}
+void Game::EnemySpawner(float elapsedSec)
+{
+	// Logaritmic Spawn Interval
+	const float initialInterval = 8.0f; // Max spawn-interval
+	const float minInterval = 1.5f;      // Min spawn-interva
+	const float scale = 1.25f;            // Scale logaritmic increase
+	float currentInterval = std::max(minInterval, initialInterval - scale * std::log(1.0f + m_TotalTime));
+
+	//Spawn condition
+	if (m_TotalTime - m_LastSpawnTime >= currentInterval)
+	{
+		//std::cout << currentInterval << std::endl;
+		// Add new enemy to vector
+		Enemy enemy{ {m_Window.width / 2.f, m_Window.height / 2.f, 0, 1} };
+		enemy.TranslateEnemy(
+			TwoBlade{ rand() % 200 - 100.f, rand() % 200 - 100.f, 0, 0, 0, 1 }.Normalized(),
+			1000.f
+		);
+		m_Enemies.push_back(enemy);
+
+		// Update LastSpawnTime
+		m_LastSpawnTime = m_TotalTime;
+	}
+
+	// Reset Spawning
+	if (m_pPlayer->GetHealth() <= 0)
+	{
+		m_pPlayer->LoseHealth(-100); //Player health 100
+		m_Enemies.clear();
+		m_TotalTime = 0.0f;
+		m_LastSpawnTime = 0.0f;
+		m_Score = 0;
+	}
+}
+void Game::Update(float elapsedSec)
+{
+	m_TotalTime += elapsedSec;
+	//std::cout << "Framerate: " << 1.f / elapsedSec << std::endl;
+	
+	//Player Update
+	PlayerBorderCheck();
+
+	m_pPlayer->HandleInput(m_KeysPressed);
+	m_pPlayer->UpdatePlayer(m_KeysPressed, elapsedSec);
+
+	//Pillar Update
+	ThreeBlade pos{ m_pPlayer->GetPos() };
+	m_Pillar.Update(elapsedSec, m_Bullets, pos,m_PillarBullets,m_Enemies);
+	m_pPlayer->SetPos(pos);
+
+	m_Pillar.SetRadius(sin(m_TotalTime) * 100 + 200.f);
+
+	//Enemies update
+	UpdateEnemies(elapsedSec);
+	//Update Bullets
+	UpdateBullets(elapsedSec);
+	
+	// Spawn Enemies
+	EnemySpawner(elapsedSec);
 }
 
 void Game::Draw() const

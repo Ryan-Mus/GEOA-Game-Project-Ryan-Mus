@@ -6,6 +6,7 @@
 #include "Pillar.h"
 #include "PillarBullet.h"
 #include "Enemy.h"
+#include <cmath>
 #include <vector>
 #include <memory>
 #include <iostream>
@@ -50,6 +51,10 @@ public:
 		{
 			m_KeysPressed.m_SpaceIsPressed = true;
 		}
+		if (e.keysym.scancode == SDL_SCANCODE_P)
+		{
+			m_DevMode = !m_DevMode;
+		}
 	}
 	void ProcessKeyUpEvent(const SDL_KeyboardEvent& e)
 	{
@@ -80,7 +85,9 @@ public:
 	}
 	void ProcessMouseDownEvent(const SDL_MouseButtonEvent& e)
 	{
-		if (m_pPlayer->GetEnergy() > 100.f and e.button == SDL_BUTTON_LEFT)
+		float requiredEnergy{ 100.f };
+		if (m_DevMode) requiredEnergy = 0;
+		if (m_pPlayer->GetEnergy() > requiredEnergy and e.button == SDL_BUTTON_LEFT)
 		{
 			Point2f mousePos{ static_cast<float>(e.x),static_cast<float>(e.y) };
 			ThreeBlade playerPos{ m_pPlayer->GetPos() };
@@ -88,9 +95,9 @@ public:
 			velocity /= velocity.VNorm();
 
 			m_Bullets.emplace_back(Bullet{ ThreeBlade{playerPos[0],playerPos[1],10.f,playerPos[3]},velocity });
-			m_pPlayer->LoseEnergy(100.f);
+			m_pPlayer->LoseEnergy(requiredEnergy);
 		}
-		else if (m_pPlayer->GetEnergy() > 1000.f and e.button == SDL_BUTTON_RIGHT)
+		else if (m_pPlayer->GetEnergy() > requiredEnergy*10.f and e.button == SDL_BUTTON_RIGHT)
 		{
 			Point2f mousePos{ static_cast<float>(e.x),static_cast<float>(e.y) };
 			ThreeBlade playerPos{ m_pPlayer->GetPos() };
@@ -101,7 +108,7 @@ public:
 			if (playerPos[0] > m_Window.width - 100.f) playerPos[0] = m_Window.width - 101.f;
 			if (playerPos[1] > m_Window.height- 100.f) playerPos[1] = m_Window.height - 101.f;
 			m_PillarBullets.emplace_back(PillarBullet{ThreeBlade{playerPos[0],playerPos[1],0,0},velocity,300.f});
-			m_pPlayer->LoseEnergy(1000.f);
+			m_pPlayer->LoseEnergy(requiredEnergy*10.f);
 		}
 		else
 		{
@@ -141,6 +148,10 @@ private:
 	void PlayerBorderCheck();
 	void BulletBorderCheck();
 
+	void UpdateEnemies(float elapsedSec);
+	void UpdateBullets(float elapsedSec);
+	void EnemySpawner(float elapsedSec);
+
 	//Player
 	std::unique_ptr<Player> m_pPlayer{};
 
@@ -165,4 +176,10 @@ private:
 
 	//update
 	const int SUBSTEPS{ 8 };
+	float m_TotalTime{0};
+	float m_LastSpawnTime{ 0 };
+
+	int m_Score{ 0 };
+
+	bool m_DevMode{false};
 };

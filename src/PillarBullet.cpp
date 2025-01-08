@@ -11,17 +11,24 @@ PillarBullet::PillarBullet(const ThreeBlade& pos,const TwoBlade& velocity, float
 //---------------------------
 // Member functions
 //---------------------------
-void PillarBullet::Update(float elapsedSec, std::deque<Bullet>& bullets)
+void PillarBullet::Update(float elapsedSec, std::deque<Bullet>& bullets, std::vector<Enemy>& enemies)
 {
     m_Pillar.Translate(m_Velocity, m_Speed * elapsedSec);
-    for (Bullet& bullet : bullets)
+    for (auto& bullet : bullets)
     {
         if (math::GetDistance(m_Pillar.GetLine(), bullet.GetPos()) < 100.f)
         {
             bullet.TranslateBullet(m_Velocity, m_Speed * elapsedSec);
         }
     }
-    m_Pillar.Update(elapsedSec, bullets);
+    for (auto& enemy : enemies)
+    {
+        if (math::GetDistance(m_Pillar.GetLine(), enemy.GetPos()) < 100.f)
+        {
+            enemy.TranslateEnemy(m_Velocity, m_Speed * elapsedSec);
+        }
+    }
+    m_Pillar.Update(elapsedSec, bullets,enemies);
 
     m_LifeTime -= elapsedSec;
 }
