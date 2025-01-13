@@ -377,8 +377,9 @@ void Game::EnemySpawner(float elapsedSec)
 	if (m_TotalTime - m_LastSpawnTime >= currentInterval)
 	{
 		//std::cout << currentInterval << std::endl;
-		// Add new enemy to vector
+		// Add new enemy to vector in the middle of the screen
 		Enemy enemy{ {m_Window.width / 2.f, m_Window.height / 2.f, 0, 1} };
+		//Translate a random direction with 1000 distance
 		enemy.TranslateEnemy(
 			TwoBlade{ rand() % 200 - 100.f, rand() % 200 - 100.f, 0, 0, 0, 1 }.Normalized(),
 			1000.f
@@ -392,11 +393,13 @@ void Game::EnemySpawner(float elapsedSec)
 	// Reset Spawning
 	if (m_pPlayer->GetHealth() <= 0)
 	{
+		std::cout << "Score was: " << m_Score << std::endl;
 		m_pPlayer->LoseHealth(-100); //Player health 100
 		m_Enemies.clear();
 		m_TotalTime = 0.0f;
 		m_LastSpawnTime = 0.0f;
 		m_Score = 0;
+		m_pPlayer->LoseEnergy(m_pPlayer->GetEnergy());
 	}
 }
 void Game::Update(float elapsedSec)

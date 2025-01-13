@@ -10,6 +10,7 @@ namespace math
     }
     inline float GetDistance(const TwoBlade& line, const ThreeBlade& point)
     {
+       
         return TwoBlade::LineFromPoints(line[0], line[1], 0.f, point[0], point[1], 0.f).Norm();
     }
     inline float GetDistance(const OneBlade& plane, const TwoBlade& line)
@@ -18,7 +19,7 @@ namespace math
     }
     inline float GetDistance(const OneBlade& plane, const ThreeBlade& point)
     {
-        return abs((point * plane)[7]);// I value = distance 
+        return abs(point ^ plane);
     }
     inline float GetDistance(const ThreeBlade& point1, const ThreeBlade& point2)
     {
@@ -63,10 +64,10 @@ namespace math
         Motor translator{ Motor::Translation(distance, direction) };
         point = (translator * point * ~translator).Grade3();
     }
-    inline void Translate(TwoBlade& m_Line, const TwoBlade& direction, float distance)
+    inline void Translate(TwoBlade& line, const TwoBlade& direction, float distance)
     {
         Motor translator{ Motor::Translation(distance, TwoBlade{-direction[1],direction[0],0,0,0,0})};
-        m_Line = (translator * m_Line * ~translator).Grade2();
+        line = (translator * line * ~translator).Grade2();
     }
     inline void Translate(OneBlade& plane, const TwoBlade& direction, float distance)
     {
